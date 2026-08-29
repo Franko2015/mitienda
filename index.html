@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es-CL" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Productos de aseo, limpieza y packs para hogares y negocios. Compra fácilmente y solicita tu pedido por WhatsApp.">
+  <meta name="theme-color" content="#0875c1">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CL">
+  <meta property="og:title" content="Productos de Aseo a Buen Precio | Romayor">
+  <meta property="og:description" content="Productos de aseo, limpieza y packs para hogares y negocios. Compra fácilmente y solicita tu pedido por WhatsApp.">
+  <meta property="og:image" content="assets/images/og-cover.svg">
+  <title>Productos de Aseo a Buen Precio | Romayor</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫧</text></svg>">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header" id="inicio">
+    <nav class="container nav-bar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span data-business-name>Romayor</span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="main-menu">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#packs">Packs</a></li>
+        <li><a href="#promociones">Promociones</a></li>
+        <li><a href="#como-comprar">Cómo comprar</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <button class="cart-trigger" type="button" data-open-cart aria-label="Abrir carrito, 0 productos">
+        <span aria-hidden="true">🛒</span><span class="cart-label">Carrito</span><span class="cart-badge" data-cart-count>0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="contenido">
+    <section class="hero section-pad">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Ahorro cotidiano, compra sencilla</span>
+          <h1>Productos de aseo a <span>precios convenientes</span></h1>
+          <p class="hero-lead">Compra por unidad o aprovecha nuestros packs con descuento. Haz tu pedido directamente por WhatsApp.</p>
+          <div class="hero-actions">
+            <a href="#productos" role="button">Ver productos</a>
+            <a href="#packs" role="button" class="outline">Ver packs</a>
+          </div>
+          <p class="trust-line"><span aria-hidden="true">✓</span> Productos para hogares, negocios y emprendimientos.</p>
+        </div>
+        <div class="hero-visual" aria-label="Selección de productos de limpieza">
+          <div class="bubble bubble-one"></div><div class="bubble bubble-two"></div>
+          <div class="hero-products" aria-hidden="true">
+            <span class="product-shape bottle">✦</span>
+            <span class="product-shape gloves">♢</span>
+            <span class="product-shape roll">●</span>
+          </div>
+          <article class="whatsapp-card">
+            <span class="wa-icon" aria-hidden="true">☎</span>
+            <div><strong>Pedidos por WhatsApp</strong><small>Atención rápida y personalizada</small></div>
+          </article>
+          <div class="saving-chip"><strong>Hasta 30%</strong><span>de ahorro por volumen</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" aria-label="Beneficios de comprar con nosotros">
+      <div class="container benefits-grid">
+        <article><span aria-hidden="true">🧽</span><div><h2>Productos de uso diario</h2><p>Lo que necesitas en tu hogar o negocio.</p></div></article>
+        <article><span aria-hidden="true">📦</span><div><h2>Packs convenientes</h2><p>Compra más y paga menos.</p></div></article>
+        <article><span aria-hidden="true">📲</span><div><h2>Pedido por WhatsApp</h2><p>Envía tu carrito en un toque.</p></div></article>
+        <article><span aria-hidden="true">🎁</span><div><h2>Clientes frecuentes</h2><p>Beneficios para tus próximas compras.</p></div></article>
+      </div>
+    </section>
+
+    <section class="section-pad catalog-section" id="productos">
+      <div class="container">
+        <div class="section-heading split-heading">
+          <div><span class="eyebrow">Catálogo esencial</span><h2>Todo lo que necesitas para limpiar y ahorrar</h2><p>Elige la presentación que más te conviene. Mientras más llevas, menor es el precio por unidad.</p></div>
+          <a href="#packs" class="text-link">Prefiero un pack completo →</a>
+        </div>
+        <div class="catalog-tools" role="search">
+          <label class="search-box" for="product-search"><span aria-hidden="true">⌕</span><span class="sr-only">Buscar productos</span><input id="product-search" type="search" placeholder="Buscar producto…" autocomplete="off"></label>
+          <div class="filter-list" id="category-filters" aria-label="Filtrar por categoría"></div>
+        </div>
+        <p class="results-status" id="results-status" aria-live="polite"></p>
+        <div class="product-grid" id="product-grid"></div>
+      </div>
+    </section>
+
+    <section class="section-pad custom-pack-section" id="arma-tu-pack">
+      <div class="container custom-pack-grid"><div><span class="eyebrow">Pedido a tu medida</span><h2>Arma tu propio pack</h2><p>Indica las cantidades que necesitas y envía la combinación por WhatsApp. Revisaremos disponibilidad y te confirmaremos el precio especial.</p><p class="custom-pack-note">Esta herramienta genera una solicitud de cotización; no agrega un precio automático ni reserva stock.</p></div><form id="custom-pack-form" class="custom-pack-form"><div id="custom-pack-items"></div><div class="custom-pack-actions"><span id="custom-pack-count">0 unidades seleccionadas</span><button type="submit" class="whatsapp-button">Cotizar mi pack por WhatsApp</button></div></form></div>
+    </section>
+
+    <section class="section-pad packs-section" id="packs">
+      <div class="container">
+        <div class="section-heading centered">
+          <span class="eyebrow light">Cajas armadas para cada necesidad</span>
+          <h2>Elige el pack según cuánto necesitas</h2>
+          <p>Cada pack reúne productos distintos en un solo pedido. Revisa las cantidades y medidas incluidas, compara el valor por separado y mira cuánto ahorras.</p>
+        </div>
+        <div class="pack-compare" aria-label="Comparación rápida de packs">
+          <div class="compare-row compare-head"><span>Pack</span><span>Ideal para</span><span>Precio</span></div>
+          <a class="compare-row" href="#pack-grid"><strong>Hogar</strong><span>Uso semanal</span><b>$19.990</b></a>
+          <a class="compare-row" href="#pack-grid"><strong>Limpieza</strong><span>Abastecer el mes</span><b>$34.990</b></a>
+          <a class="compare-row" href="#pack-grid"><strong>Negocio</strong><span>Consumo frecuente</span><b>$59.990</b></a>
+          <a class="compare-row" href="#pack-grid"><strong>Emprendedor</strong><span>Volumen o reventa</span><b>$89.990</b></a>
+        </div>
+        <div class="pack-grid" id="pack-grid"></div>
+      </div>
+    </section>
+
+    <section class="section-pad promotions-section" id="promociones">
+      <div class="container">
+        <div class="section-heading centered"><span class="eyebrow">Ahorro automático</span><h2>Promociones de esta semana</h2><p>Tu carrito compara las promociones y aplica solo la alternativa más beneficiosa.</p></div>
+        <div class="promo-grid">
+          <article><span class="promo-number">01</span><span class="promo-icon" aria-hidden="true">🎁</span><h3>Regalo Pack Hogar</h3><p>Compra un Pack Hogar y recibe <strong>1 paño amarillo gratis</strong>.</p></article>
+          <article class="featured"><span class="promo-number">02</span><span class="promo-icon" aria-hidden="true">📦</span><h3>5% de descuento</h3><p>Compra 2 packs y recibe un <strong>5% de descuento</strong> sobre ellos.</p></article>
+          <article><span class="promo-number">03</span><span class="promo-icon" aria-hidden="true">🔥</span><h3>10% de descuento</h3><p>Compra 3 packs o más y recibe un <strong>10% de descuento</strong> sobre ellos.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad draw-section">
+      <div class="container draw-card">
+        <div class="draw-icon" aria-hidden="true">🎉</div>
+        <div><span class="eyebrow">Sorteo mensual por WhatsApp</span><h2>Compra un pack y participa</h2><p>Cada compra de un pack entrega una participación. Los participantes serán agregados al grupo de WhatsApp correspondiente al mes para recibir las novedades del sorteo.</p><ol class="draw-steps"><li><strong>1</strong><span>Compra al menos un pack</span></li><li><strong>2</strong><span>Ingresa al grupo mensual de WhatsApp</span></li><li><strong>3</strong><span>Sigue el sorteo en vivo por YouTube</span></li></ol><p>La persona ganadora se escogerá mediante una ruleta durante la transmisión en vivo.</p><strong class="prize">Premio: 1 Pack Hogar GRATIS</strong><small>Una compra de pack equivale a una participación. Promoción sujeta a disponibilidad y condiciones del negocio.</small></div>
+        <div class="draw-date"><span>Próximo sorteo</span><strong id="draw-date">Último día del mes</strong><small id="draw-countdown"></small></div>
+      </div>
+    </section>
+
+    <section class="section-pad business-section">
+      <div class="container business-grid">
+        <div><span class="eyebrow light">Precios por volumen</span><h2>¿Tienes un negocio?</h2><p>También atendemos pedidos para pequeños negocios y emprendimientos.</p><div class="business-tags"><span>Restaurantes</span><span>Peluquerías</span><span>Barberías</span><span>Talleres</span><span>Oficinas</span><span>Emprendimientos</span><span>Empresas de limpieza</span><span>Locales comerciales</span></div><a id="business-whatsapp" class="button whatsapp-button" href="#" target="_blank" rel="noopener">Quiero comprar para mi negocio</a></div>
+        <div class="business-art" aria-hidden="true"><span>50</span><strong>unidades y más</strong><small>Consulta condiciones para compras por volumen</small></div>
+      </div>
+    </section>
+
+    <section class="section-pad steps-section" id="como-comprar">
+      <div class="container">
+        <div class="section-heading centered"><span class="eyebrow">Simple y rápido</span><h2>Cómo comprar</h2><p>No necesitas crear una cuenta para comprar.</p></div>
+        <div class="steps-grid">
+          <article><span>01</span><h3>Elige tus productos</h3><p>Agrega productos y packs al carrito.</p></article>
+          <article><span>02</span><h3>Completa tus datos</h3><p>Indica tu nombre, WhatsApp y modalidad de entrega en Romeral.</p></article>
+          <article><span>03</span><h3>Envía tu pedido</h3><p>Revisa el mensaje y envíalo por WhatsApp.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad reorder-section" id="pedido-anterior" hidden>
+      <div class="container reorder-card"><div><span class="eyebrow">Compra recurrente</span><h2>¿Quieres repetir tu pedido anterior?</h2><p id="last-order-summary">Recupera los productos de tu última compra preparada.</p></div><button type="button" id="repeat-order">Cargar pedido anterior</button></div>
+    </section>
+
+    <section class="section-pad faq-section" id="preguntas">
+      <div class="container faq-grid"><div class="section-heading"><span class="eyebrow">Antes de pedir</span><h2>Preguntas frecuentes</h2><p>La coordinación final, disponibilidad y entrega se confirman personalmente por WhatsApp.</p></div><div class="faq-list">
+        <details open><summary>¿Dónde realizan entregas?</summary><p>Las entregas se realizan únicamente dentro de Romeral, Chile. El horario y el costo del delivery se coordinan por WhatsApp, ya que no están incluidos en el total del carrito.</p></details>
+        <details><summary>¿Los precios incluyen IVA?</summary><p>Sí. Todos los precios publicados incluyen el IVA del producto.</p></details>
+        <details><summary>¿Puedo mezclar distintos productos?</summary><p>Sí. Puedes combinar cualquier producto o pack hasta completar el mínimo de compra de $5.000.</p></details>
+        <details><summary>¿Puedo comprar para mi negocio?</summary><p>Sí. Atendemos hogares y todo tipo de negocios. Para pedidos especiales o grandes volúmenes, consulta directamente por WhatsApp.</p></details>
+        <details><summary>¿Cómo se confirma el stock?</summary><p>La disponibilidad se confirma al contactarnos por WhatsApp antes de concretar la venta.</p></details>
+        <details><summary>¿Qué medios de pago aceptan?</summary><p>Aceptamos transferencia al momento de concretar la compra y pago en efectivo.</p></details>
+        <details><summary>¿Cuándo queda confirmado mi pedido?</summary><p>El pedido queda confirmado una vez concretada la venta por WhatsApp. Preparar el mensaje desde esta página no reserva stock automáticamente.</p></details>
+        <details><summary>¿Cómo se mide el uso de esta página?</summary><p>La página registra localmente acciones generales como abrir el carrito o agregar un producto. No envía estos datos a servicios externos ni guarda información personal en la analítica.</p></details>
+      </div></div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container"><div><h2>¿Listo para ahorrar en tus compras de aseo?</h2><p>Arma tu pedido, revisa tu descuento y envíalo directamente por WhatsApp.</p></div><a href="#productos" role="button" class="contrast">Hacer mi pedido</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contacto">
+    <div class="container footer-grid">
+      <div><a class="brand footer-brand" href="#inicio"><span class="brand-mark" aria-hidden="true">✦</span><span data-business-name>Romayor</span></a><p>Productos esenciales de aseo para hogares y negocios, con precios convenientes por volumen.</p></div>
+      <div><h2>Contacto</h2><p><strong>WhatsApp:</strong> <a href="https://wa.me/56998110665" target="_blank" rel="noopener">+56 9 9811 0665</a></p><p><strong>Correo:</strong> <span data-business-email>correo@negocio.cl</span></p><p><strong>Horario:</strong> <span data-business-hours>HORARIO POR CONFIGURAR</span></p></div>
+      <div><h2>Explora</h2><nav aria-label="Enlaces del pie de página"><a href="#inicio">Inicio</a><a href="#productos">Productos</a><a href="#packs">Packs</a><a href="#promociones">Promociones</a><a href="#contacto">Contacto</a></nav></div>
+      <div><h2>Información</h2><nav aria-label="Información legal"><a href="#terminos">Términos y condiciones</a><a href="#privacidad">Política de privacidad</a></nav><small>Textos legales pendientes de configuración por el negocio.</small></div>
+    </div>
+    <div class="container footer-bottom"><span>© <span id="current-year"></span> <span data-business-name>Romayor</span>.</span><span>Pedidos coordinados mediante WhatsApp Business.</span><span>Fotografías referenciales: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a> y <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</span></div>
+  </footer>
+
+  <div class="drawer-overlay" id="drawer-overlay" hidden></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-labelledby="cart-title" aria-hidden="true">
+    <header><div><span class="eyebrow">Compra segura y simple</span><h2 id="cart-title">Tu pedido</h2></div><button class="icon-button" id="close-cart" type="button" aria-label="Cerrar carrito">×</button></header>
+    <div class="cart-progress" aria-label="Progreso del pedido"><span class="active" data-step-indicator="1"><b>1</b> Revisa</span><i></i><span data-step-indicator="2"><b>2</b> Tus datos</span></div>
+    <section class="cart-step active" id="cart-step-1" aria-label="Revisar pedido">
+      <div class="cart-content" id="cart-items"></div>
+      <div class="cart-footer">
+        <div class="active-promo" id="active-promo" hidden></div>
+        <div class="minimum-order" id="minimum-order" aria-live="polite"></div>
+        <dl class="totals"><div><dt>Subtotal</dt><dd id="cart-subtotal">$0</dd></div><div><dt>Descuento</dt><dd id="cart-discount">-$0</dd></div><div><dt>Ahorro total</dt><dd id="cart-savings">$0</dd></div><div class="grand-total"><dt>Total</dt><dd id="cart-total">$0</dd></div></dl>
+        <button type="button" class="whatsapp-button" id="go-checkout">Continuar con mis datos</button>
+        <div class="cart-secondary-actions"><button type="button" class="secondary outline" id="share-cart">Compartir resumen</button><button type="button" class="secondary outline clear-cart" id="clear-cart">Vaciar</button></div>
+      </div>
+    </section>
+    <form class="cart-step checkout-form drawer-checkout" id="checkout-form" novalidate>
+      <div class="drawer-form-content">
+        <button type="button" class="back-step" id="back-to-cart">← Volver a revisar el pedido</button>
+        <div class="order-compact-summary"><span>Tu compra</span><strong data-cart-summary>Tu carrito está vacío</strong></div>
+        <label for="customer-name">Nombre completo <span aria-hidden="true">*</span><input id="customer-name" name="name" type="text" autocomplete="name" required></label>
+        <label for="customer-phone">WhatsApp <span aria-hidden="true">*</span><input id="customer-phone" name="phone" type="tel" value="+56 9 " autocomplete="tel" required></label>
+        <label for="customer-email">Correo electrónico <small>(opcional)</small><input id="customer-email" name="email" type="email" placeholder="tu@correo.cl" autocomplete="email"></label>
+        <fieldset class="choice-field"><legend>Modalidad de entrega <span aria-hidden="true">*</span></legend><div class="choice-cards"><label><input type="radio" name="delivery" value="delivery" checked><span><strong>Delivery en Romeral</strong><small>Costo y horario por coordinar</small></span></label><label><input type="radio" name="delivery" value="pickup"><span><strong>Retiro coordinado</strong><small>Lugar y horario por WhatsApp</small></span></label></div></fieldset>
+        <div id="delivery-fields"><label for="delivery-sector">Sector de Romeral <span aria-hidden="true">*</span><select id="delivery-sector" name="sector" required></select></label><label for="custom-sector" id="custom-sector-label">Escribe tu sector <span aria-hidden="true">*</span><input id="custom-sector" name="customSector" type="text" placeholder="Sector dentro de Romeral" required></label><label for="delivery-address">Dirección <span aria-hidden="true">*</span><input id="delivery-address" name="address" type="text" placeholder="Calle, número o referencia" autocomplete="street-address" required></label><p class="delivery-note">El costo y horario de entrega se coordinan por WhatsApp y no están incluidos en este total.</p></div>
+        <fieldset class="choice-field"><legend>¿Cómo quieres pagar? <span aria-hidden="true">*</span></legend><div class="choice-cards"><label><input type="radio" name="payment" value="transfer-now" checked><span><strong>Transferir ahora</strong><small>Antes de confirmar el pedido</small></span></label><label><input type="radio" name="payment" value="cash-delivery"><span><strong>Efectivo al recibir</strong><small>Coordinar por WhatsApp</small></span></label></div></fieldset>
+        <section class="bank-details" id="bank-details" aria-labelledby="bank-details-title"><span class="demo-label">Datos ficticios · No transferir</span><h3 id="bank-details-title">Datos para transferencia</h3><dl><div><dt>Banco</dt><dd data-bank="bank">BancoEstado</dd></div><div><dt>Tipo de cuenta</dt><dd data-bank="accountType">Cuenta Vista</dd></div><div><dt>Titular</dt><dd data-bank="holder">ROMAYOR DEMO</dd></div><div><dt>RUT</dt><dd data-bank="rut">00.000.000-0</dd></div><div><dt>N.º de cuenta</dt><dd data-bank="accountNumber">00000000</dd></div><div><dt>Correo</dt><dd data-bank="email">pagos@romayor.cl</dd></div></dl><button type="button" class="secondary outline copy-bank" id="copy-bank-details">Copiar datos</button><ol class="transfer-steps"><li>Realiza la transferencia.</li><li>Guarda el comprobante.</li><li>Abre WhatsApp y adjúntalo en la conversación.</li><li>Espera la confirmación del stock y la entrega.</li></ol><small>Estos datos son únicamente una demostración y deben reemplazarse antes de publicar la tienda.</small></section>
+        <button type="button" class="indications-toggle secondary outline" id="indications-toggle" aria-expanded="false" aria-controls="indications-field">+ Agregar indicaciones</button><label for="order-notes" id="indications-field" hidden>Indicaciones <small>(opcional)</small><textarea id="order-notes" name="notes" rows="3" maxlength="300" placeholder="Ej.: portón azul, llamar al llegar o una indicación sobre el pedido."></textarea></label>
+        <label class="check-label remember-label" for="remember-customer"><input id="remember-customer" name="remember" type="checkbox"> Recordar mis datos en este dispositivo para la próxima compra.</label>
+        <div class="form-errors" id="form-errors" role="alert" aria-live="assertive"></div>
+      </div>
+      <div class="drawer-submit"><strong>Total: <span id="checkout-total">$0</span></strong><button class="whatsapp-button order-button" type="submit"><span aria-hidden="true">☎</span> Preparar pedido en WhatsApp</button><small>El pedido se confirma al concretar la venta por WhatsApp.</small></div>
+    </form>
+  </aside>
+
+  <button class="mobile-cart-bar" id="mobile-cart-bar" type="button" data-open-cart hidden><span><small>Tu pedido</small><strong data-mobile-cart-summary>0 productos</strong></span><b data-mobile-cart-total>$0</b><i>Ver pedido</i></button>
+  <a class="floating-whatsapp" id="help-whatsapp" href="https://wa.me/56998110665?text=Hola%2C%20quiero%20consultar%20por%20los%20productos." target="_blank" rel="noopener" aria-label="Hablar por WhatsApp"><span aria-hidden="true">☎</span><span>Habla con nosotros</span></a>
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
