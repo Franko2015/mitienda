@@ -219,7 +219,7 @@ function formatWhatsapp(raw) {
 }
 
 function loadEnv() {
-  return fetch(`.env?v=${Date.now()}`, { cache: "no-store" })
+  return fetch(`env.txt?v=${Date.now()}`, { cache: "no-store" })
     .then((response) => {
       if (!response.ok) throw new Error("No se pudo cargar .env");
       return response.text();

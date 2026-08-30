@@ -1,8 +1,8 @@
 const fs = require("fs");
-const envPath = "./.env";
+const envPath = "./env.txt";
 
 if (fs.existsSync(envPath)) {
-  console.log(".env already exists, skipping generation.");
+  console.log("env.txt already exists, skipping generation.");
   process.exit(0);
 }
 
@@ -38,4 +38,4 @@ const lines = keys.map((key) => {
 });
 
 fs.writeFileSync(envPath, lines.join("\n") + "\n");
-console.log("Generated .env from Vercel environment variables.");
+console.log("Generated env.txt from Vercel environment variables.");
