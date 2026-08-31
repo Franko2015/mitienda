@@ -33,6 +33,8 @@ const formatCurrency = new Intl.NumberFormat("es-CL", {
   maximumFractionDigits: 0
 });
 
+const LAZY_IMAGE_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23eef5f7'/%3E%3C/svg%3E";
+
 const createProductImage = (label, color = "#0875c1", accent = "#9ee4f5") => {
   const initials = label.split(" ").slice(0, 2).map((word) => word[0]).join("").toUpperCase();
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="560" height="400" viewBox="0 0 560 400" role="img" aria-label="${label}"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7fcff"/><stop offset="1" stop-color="${accent}"/></linearGradient></defs><rect width="560" height="400" fill="url(#g)"/><circle cx="420" cy="80" r="55" fill="#fff" opacity=".65"/><circle cx="95" cy="325" r="72" fill="#fff" opacity=".55"/><rect x="185" y="72" width="190" height="255" rx="46" fill="${color}"/><rect x="230" y="39" width="100" height="55" rx="14" fill="#173044"/><rect x="207" y="170" width="146" height="90" rx="18" fill="#fff" opacity=".94"/><text x="280" y="225" font-family="Arial,sans-serif" font-size="42" font-weight="700" text-anchor="middle" fill="${color}">${initials}</text></svg>`;
@@ -211,6 +213,26 @@ function slugify(text) {
   return normalizeText(text).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  })[character]);
+}
+
+function formatProductDescription(description) {
+  const text = String(description || "").trim();
+  if (!text) return "";
+  const items = text.split(/\s*\*\s*/).map((item) => item.trim()).filter(Boolean);
+  if (text.includes("*") && items.length) {
+    return `<ul class="product-description product-description-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  }
+  return `<p class="product-description">${escapeHtml(text)}</p>`;
+}
+
 function normalizeImageUrl(rawUrl) {
   const url = String(rawUrl || "").trim();
   if (!url) return "";
@@ -365,9 +387,11 @@ function buildCategories() {
 let PRODUCTS = DEFAULT_PRODUCTS;
 let CATEGORIES = [{ id: "all", label: "Todos" }, { id: "limpieza", label: "Limpieza" }, { id: "cocina", label: "Cocina" }, { id: "proteccion", label: "Protección" }, { id: "automovil", label: "Automóvil" }, { id: "hogar", label: "Hogar" }];
 
+const PRODUCTS_PER_PAGE = 15;
 let cart = [];
 let activeCategory = "all";
 let searchTerm = "";
+let currentProductPage = 1;
 const productQuantities = new Map();
 
 const getProduct = (id) => PRODUCTS.find((product) => product.id === id);
@@ -403,9 +427,10 @@ function productCardTemplate(product) {
   const sorteoLine = product.numeroSorteo ? `<p class="product-draw">Sorteo N°${product.numeroSorteo} · ${product.fechaSorteo}</p>` : "";
   const infoLine = product.info ? `<p class="product-info">${product.info}</p>` : "";
   const stockLine = product.stock < 999 ? `<p class="product-stock">${outOfStock ? "Sin stock" : lowStock ? `Quedan ${product.stock} ${getUnitName(product, product.stock)}` : `Stock: ${product.stock} ${getUnitName(product, product.stock)}`}</p>` : "";
+  const description = formatProductDescription(product.description);
   return `<article class="product-card" data-product-card="${product.id}" data-stock="${product.stock}" data-variant-units="${selectedVariant.units}">
-    <div class="product-image"><img src="${product.image}" data-fallback="${product.fallbackImage}" alt="Imagen referencial de ${product.name}" loading="lazy" width="560" height="400">${product.badge ? `<span class="badge">${product.badge}</span>` : ""}${lowStock ? '<span class="badge stock-badge">Últimas unidades</span>' : ""}<small class="reference-photo">Imagen referencial</small></div>
-    <div class="product-body"><span class="product-category">${CATEGORIES.find((item) => item.id === product.category)?.label || product.category}</span><h3>${product.name}</h3><p class="product-description">${product.description}</p>${sorteoLine}${infoLine}
+    <div class="product-image"><img class="lazy-image" src="${LAZY_IMAGE_PLACEHOLDER}" data-src="${product.image}" data-fallback="${product.fallbackImage}" alt="Imagen referencial de ${product.name}" loading="lazy" decoding="async" width="560" height="400">${product.badge ? `<span class="badge">${product.badge}</span>` : ""}${lowStock ? '<span class="badge stock-badge">Últimas unidades</span>' : ""}<small class="reference-photo">Imagen referencial</small></div>
+    <div class="product-body"><span class="product-category">${CATEGORIES.find((item) => item.id === product.category)?.label || product.category}</span><h3>${product.name}</h3>${description}${sorteoLine}${infoLine}
       <div class="price-row"><strong class="price-main" data-price="${product.id}">${formatCurrency.format(selectedVariant.price)}</strong></div>
       ${stockLine}
       <div class="product-controls"><div><span class="control-label">Cantidad</span><div class="quantity-control" aria-label="Cantidad"><button type="button" data-product-quantity="decrease" data-id="${product.id}" aria-label="Disminuir cantidad">−</button><output data-product-output="${product.id}">1</output><button type="button" data-product-quantity="increase" data-id="${product.id}" aria-label="Aumentar cantidad">+</button></div></div><button class="add-button" type="button" data-add-product="${product.id}" ${outOfStock ? "disabled" : ""}>${outOfStock ? "Agotado" : "Agregar"}</button></div>
@@ -429,19 +454,68 @@ function getUnitPriceText(product, variant) {
   return `${formatCurrency.format(unitPrice)} ${unit}`;
 }
 
+function renderPagination(totalPages) {
+  const pagination = document.querySelector("#product-pagination");
+  if (totalPages <= 1) {
+    pagination.innerHTML = "";
+    pagination.hidden = true;
+    return;
+  }
+  pagination.hidden = false;
+  const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+    return `<button type="button" data-product-page="${page}" class="${page === currentProductPage ? "active" : ""}" aria-label="Ir a la página ${page}" ${page === currentProductPage ? 'aria-current="page"' : ""}>${page}</button>`;
+  }).join("");
+  pagination.innerHTML = `<button type="button" data-product-page="${currentProductPage - 1}" ${currentProductPage === 1 ? "disabled" : ""} aria-label="Página anterior">‹</button>${pageButtons}<button type="button" data-product-page="${currentProductPage + 1}" ${currentProductPage === totalPages ? "disabled" : ""} aria-label="Página siguiente">›</button>`;
+}
+
 function renderProducts() {
   const grid = document.querySelector("#product-grid");
-  const items = PRODUCTS.filter((product) => (activeCategory === "all" || product.category === activeCategory) && normalizeText(`${product.name} ${product.description}`).includes(normalizeText(searchTerm)));
-  grid.innerHTML = items.length ? items.map(productCardTemplate).join("") : `<div class="empty-products"><strong>No encontramos productos</strong><p>Prueba con otra búsqueda o categoría.</p></div>`;
-  document.querySelector("#results-status").textContent = `${items.length} producto${items.length === 1 ? "" : "s"} disponible${items.length === 1 ? "" : "s"}.`;
+  const items = PRODUCTS
+    .filter((product) => (activeCategory === "all" || product.category === activeCategory) && normalizeText(`${product.name} ${product.description}`).includes(normalizeText(searchTerm)))
+    .sort((first, second) => first.name.localeCompare(second.name, "es", { sensitivity: "base" }));
+  const totalPages = Math.max(1, Math.ceil(items.length / PRODUCTS_PER_PAGE));
+  currentProductPage = Math.min(currentProductPage, totalPages);
+  const start = (currentProductPage - 1) * PRODUCTS_PER_PAGE;
+  const visibleItems = items.slice(start, start + PRODUCTS_PER_PAGE);
+  grid.innerHTML = visibleItems.length ? visibleItems.map(productCardTemplate).join("") : `<div class="empty-products"><strong>No encontramos productos</strong><p>Prueba con otra búsqueda o categoría.</p></div>`;
+  document.querySelector("#results-status").textContent = `${items.length} producto${items.length === 1 ? "" : "s"} disponible${items.length === 1 ? "" : "s"}${totalPages > 1 ? ` · Página ${currentProductPage} de ${totalPages}` : ""}.`;
+  renderPagination(items.length ? totalPages : 0);
   attachImageFallbacks(grid);
+  initializeLazyImages(grid);
   productQuantities.clear();
 }
 
+function loadLazyImage(image) {
+  if (!image.dataset.src) return;
+  image.src = image.dataset.src;
+  delete image.dataset.src;
+}
+
+function initializeLazyImages(scope = document) {
+  const images = scope.querySelectorAll("img[data-src]");
+  if (!("IntersectionObserver" in window)) {
+    images.forEach(loadLazyImage);
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      loadLazyImage(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "300px 0px", threshold: 0.01 });
+  images.forEach((image) => observer.observe(image));
+}
+
 function attachImageFallbacks(scope = document) {
-  scope.querySelectorAll("img[data-fallback]").forEach((image) => image.addEventListener("error", () => {
-    if (image.src !== image.dataset.fallback) image.src = image.dataset.fallback;
-  }, { once: true }));
+  scope.querySelectorAll("img[data-fallback]").forEach((image) => {
+    image.addEventListener("load", () => image.classList.add("loaded"));
+    image.addEventListener("error", () => {
+      image.src = image.dataset.fallback;
+      delete image.dataset.src;
+    }, { once: true });
+  });
 }
 
 function addToCart(productId, variantId = "default", quantity = 1) {
@@ -1007,10 +1081,22 @@ function initializeEvents() {
     const button = event.target.closest("[data-category]");
     if (!button) return;
     activeCategory = button.dataset.category;
+    currentProductPage = 1;
     renderCategoryFilters();
     renderProducts();
   });
-  document.querySelector("#product-search").addEventListener("input", (event) => { searchTerm = event.target.value; renderProducts(); });
+  document.querySelector("#product-search").addEventListener("input", (event) => {
+    searchTerm = event.target.value;
+    currentProductPage = 1;
+    renderProducts();
+  });
+  document.querySelector("#product-pagination").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-product-page]");
+    if (!button || button.disabled) return;
+    currentProductPage = Number(button.dataset.productPage);
+    renderProducts();
+    document.querySelector("#productos").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   const menuToggle = document.querySelector("#menu-toggle");
   menuToggle.addEventListener("click", () => {
     const menu = document.querySelector("#main-menu");
