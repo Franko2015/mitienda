@@ -434,7 +434,7 @@ function productCardTemplate(product) {
       <div class="price-row"><strong class="price-main" data-price="${product.id}">${formatCurrency.format(selectedVariant.price)}</strong></div>
       ${stockLine}
       <div class="product-controls"><div><span class="control-label">Cantidad</span><div class="quantity-control" aria-label="Cantidad"><button type="button" data-product-quantity="decrease" data-id="${product.id}" aria-label="Disminuir cantidad">−</button><output data-product-output="${product.id}">1</output><button type="button" data-product-quantity="increase" data-id="${product.id}" aria-label="Aumentar cantidad">+</button></div></div><button class="add-button" type="button" data-add-product="${product.id}" ${outOfStock ? "disabled" : ""}>${outOfStock ? "Agotado" : "Agregar"}</button></div>
-      ${product.allowsVolumeQuote ? `<button class="volume-quote" type="button" data-volume-quote="${product.id}">¿Necesitas más? Cotizar volumen</button>` : ""}
+      ${product.allowsVolumeQuote ? `<button class="volume-quote" type="button" data-volume-quote="${product.id}">¿Necesitas más? Cotizar volumen</button>` : '<span class="volume-quote-placeholder" aria-hidden="true"></span>'}
     </div></article>`;
 }
 
@@ -1098,17 +1098,26 @@ function initializeEvents() {
     document.querySelector("#productos").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   const menuToggle = document.querySelector("#menu-toggle");
+  const menu = document.querySelector("#main-menu");
+  const closeMenu = () => {
+    menu.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.setAttribute("aria-label", "Abrir menú");
+  };
   menuToggle.addEventListener("click", () => {
-    const menu = document.querySelector("#main-menu");
     const open = menu.classList.toggle("open");
     menuToggle.setAttribute("aria-expanded", String(open));
     menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
   });
-  document.querySelectorAll("#main-menu a").forEach((link) => link.addEventListener("click", () => {
-    document.querySelector("#main-menu").classList.remove("open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  }));
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && document.querySelector("#cart-drawer").classList.contains("open")) closeCart(); });
+  document.querySelectorAll("#main-menu a").forEach((link) => link.addEventListener("click", closeMenu));
+  document.addEventListener("click", (event) => {
+    if (menu.classList.contains("open") && !event.target.closest(".nav-bar")) closeMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (menu.classList.contains("open")) closeMenu();
+    if (document.querySelector("#cart-drawer").classList.contains("open")) closeCart();
+  });
 }
 
 async function initializeApp() {
