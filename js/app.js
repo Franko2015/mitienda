@@ -141,7 +141,7 @@ function buildProductFromSheetRow(row, headers) {
   let stockStatus = "available";
   if (stock <= 0) stockStatus = "out";
   else if (stock <= 5) stockStatus = "low";
-  const image = get("imagen").trim();
+  const image = normalizeImageUrl(get("imagen"));
   const badge = get("badge").trim();
   const numeroSorteo = get("numero_sorteo").trim();
   const fechaSorteo = get("fecha_sorteo").trim();
@@ -209,6 +209,20 @@ function normalizeText(text) {
 
 function slugify(text) {
   return normalizeText(text).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function normalizeImageUrl(rawUrl) {
+  const url = String(rawUrl || "").trim();
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.endsWith("drive.google.com")) return url;
+    const pathMatch = parsed.pathname.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const fileId = pathMatch?.[1] || parsed.searchParams.get("id");
+    return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200` : url;
+  } catch (error) {
+    return url;
+  }
 }
 
 function formatWhatsapp(raw) {
@@ -310,7 +324,7 @@ function buildProducts() {
     if (!name) break;
     const description = getEnv(`PRODUCTO_${i}_DESCRIPCION`, getEnv(`DESCRIPCION_${i}`, ""));
     const category = (getEnv(`PRODUCTO_${i}_CATEGORIA`, "general")).toLowerCase();
-    const image = getEnv(`PRODUCTO_${i}_IMAGEN`, getEnv(`IMAGEN_${i}`, ""));
+    const image = normalizeImageUrl(getEnv(`PRODUCTO_${i}_IMAGEN`, getEnv(`IMAGEN_${i}`, "")));
     const badge = getEnv(`PRODUCTO_${i}_ETIQUETA`, "");
     const numeroSorteo = getEnv(`PRODUCTO_${i}_NUMERO_SORTEO`, getEnv(`PRODUCTO_${i}_SORTEO_NUMERO`, ""));
     const fechaSorteo = getEnv(`PRODUCTO_${i}_FECHA_SORTEO`, getEnv(`PRODUCTO_${i}_SORTEO_FECHA`, ""));
