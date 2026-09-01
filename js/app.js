@@ -150,6 +150,9 @@ function buildProductFromSheetRow(row, headers) {
   const info = get("info").trim();
   const allowsVolumeQuote = get("cotizar_volumen").trim().toLowerCase() !== "false";
   const rawId = get("id").trim();
+  const activoRaw = get("activo", "TRUE").trim().toUpperCase();
+  const activo = activoRaw !== "FALSE" && activoRaw !== "NO" && activoRaw !== "0";
+  if (!activo) return null;
   return {
     id: slugify(rawId || name),
     sheetId: rawId || slugify(name),
@@ -1172,6 +1175,39 @@ function initializeEvents() {
   });
 }
 
+const SHEET_POLL_INTERVAL = 30000;
+let lastProductsHash = "";
+
+function hashProducts(products) {
+  return products.map((p) => `${p.id}:${p.stock}:${p.price}:${p.stockStatus}:${p.name}`).sort().join("|");
+}
+
+async function refreshProductsFromSheet() {
+  try {
+    const updated = await loadProductsFromSheet();
+    if (!updated || !updated.length) return;
+    const newHash = hashProducts(updated);
+    if (newHash === lastProductsHash) return;
+    lastProductsHash = newHash;
+    PRODUCTS = updated;
+    CATEGORIES = buildCategories();
+    renderCategoryFilters();
+    renderProducts();
+    renderCart();
+    renderLastOrder();
+  } catch (error) {
+    console.warn("Error en auto-refresh de productos:", error);
+  }
+}
+
+function startSheetPolling() {
+  lastProductsHash = hashProducts(PRODUCTS);
+  setInterval(refreshProductsFromSheet, SHEET_POLL_INTERVAL);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshProductsFromSheet();
+  });
+}
+
 async function initializeApp() {
   await loadEnv();
   buildBusinessConfig();
@@ -1193,6 +1229,7 @@ async function initializeApp() {
   initializeEvents();
   initSmoothScroll();
   document.querySelector("#current-year").textContent = new Date().getFullYear();
+  startSheetPolling();
 }
 
 document.addEventListener("DOMContentLoaded", initializeApp);
