@@ -680,16 +680,65 @@ function generateWhatsAppMessage(customer = {}) {
   return `Hola, quiero realizar el siguiente pedido:\n\nCLIENTE\nNombre: ${customer.name}\nWhatsApp: ${customer.phone}\n${emailLine}\nENTREGA\n${deliveryText}\n\nPAGO\n${paymentText}\n${notesLine}\nPEDIDO\n\n${lines}\n\n--------------------\n\nSubtotal productos: ${formatCurrency.format(calculateSubtotal())}\nDelivery: ${customer.deliveryCost ? formatCurrency.format(customer.deliveryCost) : "Gratis"}\nTotal a pagar: ${formatCurrency.format(calculateTotal())}\nAhorro obtenido: ${formatCurrency.format(calculateSavings())}\n\nEntiendo que el stock, la entrega y la confirmacion final se coordinan por WhatsApp.`;
 }
 
-function sendOrderToWhatsApp(event) {
+async function sendOrderToAppsScript(customerData) {
+  const scriptUrl = getEnv("APPS_SCRIPT_URL", "").trim();
+  if (!scriptUrl) return null;
+  const solicitudId = `WEB-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const productos = cart.map((item) => {
+    const details = getItemDetails(item);
+    return { id: item.productId, cantidad: item.quantity, variante: item.variantId, precio: details?.unitPrice || 0 };
+  });
+  const payload = {
+    action: "crearPedido",
+    solicitud_id: solicitudId,
+    cliente: {
+      nombre: customerData.name,
+      telefono: customerData.phone,
+      tipo_entrega: customerData.delivery,
+      sector: customerData.sector,
+      direccion: customerData.address,
+      metodo_pago: customerData.payment
+    },
+    productos: productos,
+    tipo_zona: customerData.zone || "urbano"
+  };
+  try {
+    const response = await fetch(scriptUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      mode: "no-cors"
+    });
+    try {
+      return await response.json();
+    } catch (_) {
+      return { ok: true, modo: "no-cors" };
+    }
+  } catch (error) {
+    console.warn("Error registrando pedido en Apps Script:", error);
+    return null;
+  }
+}
+
+async function sendOrderToWhatsApp(event) {
   event?.preventDefault();
   const validation = validateCheckout();
   if (!validation.valid) return;
+  const submitButton = document.querySelector(".order-button");
+  if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Registrando pedido..."; }
+  try {
+    const result = await sendOrderToAppsScript(validation.data);
+    if (result) console.log("Pedido registrado en Apps Script:", result);
+  } catch (error) {
+    console.warn("No se pudo registrar en Apps Script, el pedido continúa por WhatsApp:", error);
+  }
   const message = generateWhatsAppMessage(validation.data);
   const url = `https://wa.me/${BUSINESS_CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
   saveLastOrder();
   saveCustomerData(validation.data);
   trackEvent("whatsapp_order_opened");
   showToast("Tu pedido está listo. Se abrirá WhatsApp para enviarlo.", "success");
+  if (submitButton) { submitButton.disabled = false; submitButton.innerHTML = '<span aria-hidden="true">☎</span> Preparar pedido en WhatsApp'; }
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
