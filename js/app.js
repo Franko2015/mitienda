@@ -707,13 +707,13 @@ async function sendOrderToAppsScript(customerData) {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload),
-      mode: "no-cors"
+      redirect: "follow"
     });
-    try {
-      return await response.json();
-    } catch (_) {
-      return { ok: true, modo: "no-cors" };
+    if (!response.ok) {
+      console.warn("Apps Script respondió con status:", response.status);
+      return null;
     }
+    return await response.json();
   } catch (error) {
     console.warn("Error registrando pedido en Apps Script:", error);
     return null;
