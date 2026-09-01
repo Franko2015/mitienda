@@ -149,8 +149,10 @@ function buildProductFromSheetRow(row, headers) {
   const fechaSorteo = get("fecha_sorteo").trim();
   const info = get("info").trim();
   const allowsVolumeQuote = get("cotizar_volumen").trim().toLowerCase() !== "false";
+  const rawId = get("id").trim();
   return {
-    id: slugify(get("id").trim() || name),
+    id: slugify(rawId || name),
+    sheetId: rawId || slugify(name),
     name,
     category,
     description: get("descripcion").trim(),
@@ -686,7 +688,8 @@ async function sendOrderToAppsScript(customerData) {
   const solicitudId = `WEB-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const productos = cart.map((item) => {
     const details = getItemDetails(item);
-    return { id: item.productId, cantidad: item.quantity, variante: item.variantId, precio: details?.unitPrice || 0 };
+    const product = getProduct(item.productId);
+    return { id: product?.sheetId || item.productId, cantidad: item.quantity, variante: item.variantId, precio: details?.unitPrice || 0 };
   });
   const payload = {
     action: "crearPedido",
